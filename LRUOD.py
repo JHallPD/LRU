@@ -1,53 +1,53 @@
-class LRU:
+from collections import OrderedDict
+
+
+class LRUOD:
     def __init__(self, size):
         if size <= 0:
             raise ValueError
         self.max = size
-        self.keys = []  # used a list because lists have order
-        self.cache = {}  # used a dict because it prevents duplicated keys
+        self.cache = OrderedDict()
 
     def cache_max(self):
         return self.max
 
     def get(self, key):
         try:
-            self.put(key, self.cache[key])
-            return self.cache.get(key)
+            self.cache.move_to_end(key, last=True)
+            return self.cache[key]
         except (KeyError, ValueError):
             pass
 
     def put(self, key, value):
         if key in self.cache:
             self.delete(key)
-        self.keys.append(key)
-        for _ in range(len(self.keys) - self.max):
-            self.delete(self.keys.pop(0))
         self.cache[key] = value
+        self.cache.move_to_end(key, last=True)
+        if len(self.cache) > self.max:
+            self.cache.popitem(last=False)
 
     def print(self):
         for key, value in self.cache.items():
-            print(key, " : ", value)
+            print(key, ': ', value)
         return ''
 
     def reset(self):
         self.cache.clear()
-        self.keys.clear()
 
     def delete(self, key):
         try:
             del self.cache[key]
-            self.keys.pop(self.keys.index(key))
         except (KeyError, ValueError):
             pass
 
 
 def main():
-    cache = LRU(4)
+    cache = LRUOD(4)
     cache.put('1', 'Hall')
     cache.put('2', 'Jeff')
     cache.put('3', 'Canada')
     cache.put('4', 'Ontario')
-    v = cache.get('2')  # expected return value is Hall
+    v = cache.get('2')  # expected return value is Jeff
     print(v)
     cache.put('5', 'GeorgeTown')
     cache.put('6', 'Python')
@@ -55,7 +55,6 @@ def main():
     print(v)
     cache.delete('1')
     v = cache.get('1') # expected return value is None , delete no-op
-    print(v)
     print(cache.print())
     cache.reset()
     print(cache.print())
