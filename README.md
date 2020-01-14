@@ -8,6 +8,8 @@ Simple LRU & LRU with OrderedDict scripts
 
 #### Run Scripts
 Requires Python3
+
+Navigate to Folder: \LRU>
     
     python LRU.py
     python LRUOD.py
