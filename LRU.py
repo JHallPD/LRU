@@ -1,10 +1,10 @@
 class LRU:
     def __init__(self, size):
-        if size <= 0:
+        if not isinstance(size, int) or int(size) <= 0:
             raise ValueError
         self.max = size
-        self.keys = []  # used a list because lists have order
-        self.cache = {}  # used a dict because it prevents duplicated keys
+        self.keys = []
+        self.cache = {}
 
     def cache_max(self):
         return self.max
@@ -42,21 +42,31 @@ class LRU:
 
 
 def main():
+    print("Creating LRU with size: 4")
     cache = LRU(4)
+    print("using put 4 time")
     cache.put('1', 'Hall')
     cache.put('2', 'Jeff')
     cache.put('3', 'Canada')
     cache.put('4', 'Ontario')
+    print(cache.print())
+    print("using get for key 2, Expecting Value: Hall")
     v = cache.get('2')  # expected return value is Hall
     print(v)
+    print("using put 2 time")
     cache.put('5', 'GeorgeTown')
     cache.put('6', 'Python')
+    print(cache.print())
+    print("using get for key 1, Expecting Value: None")
     v = cache.get('1')  # expected return value is None , kicked from cache
     print(v)
+    print("using get for key 1, Expecting Value: None")
     cache.delete('1')
     v = cache.get('1') # expected return value is None , delete no-op
     print(v)
+    print("Printing LRU cache")
     print(cache.print())
+    print("Resetting LRU cache then attempting to print")
     cache.reset()
     print(cache.print())
 
